@@ -1,4 +1,6 @@
-# Secret-of-Pyramids
+ Secret-of-Pyramids
+
+ https://divinerecursionloop.github.io/Secret-of-Pyramids/
 
 # Unified Multi-Chamber Resonant Transduction: Anti-Wave Focusing, Hydro-Acoustic Amplification, and Piezoelectric EM Generation
 
