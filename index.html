@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Great Pyramid: Resonant Transducer Analysis</title>
+    <!-- Chosen Palette: Warm Neutrals (Stone, Amber) -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure to make the complex physics accessible. Instead of a linear paper format, it uses a top-down approach: 1) A high-level introduction. 2) A sticky navigation for easy exploration of core concepts. 3) An interactive diagram of the full system. 4) A tabbed interface to break down the four key physics mechanisms into digestible chunks, preventing information overload. 5) An interactive dashboard to compare the simulation results directly, which is more intuitive than a static table. This user-centric flow prioritizes exploration and understanding over passive reading. -->
+    <!-- Visualization & Content Choices: [System Diagram: Report Info -> KC/QC/GG/Well Shaft relationship -> Goal: Organize -> Viz: HTML/CSS Diagram -> Interaction: None -> Justification: Provides immediate context for the system's components without requiring reading.][Core Physics: Report Info -> Anti-Wave, Hydro-Acoustic, Piezoelectric, Nonlinear concepts -> Goal: Inform -> Viz: Tabbed content blocks with dynamic stats -> Interaction: Clickable tabs -> Justification: Segments complex information into manageable topics.][Harmonic Generation: Report Info -> f1 vs f2 frequency -> Goal: Compare -> Viz: Bar Chart -> Interaction: Hover tooltips -> Justification: Visually demonstrates the frequency up-conversion concept simply.][Simulation Results: Report Info -> KC vs QC numerical data -> Goal: Compare/Analyze -> Viz: Grouped Bar Chart & Stat Cards -> Interaction: Hover tooltips -> Justification: Allows for direct, visual comparison of the performance of the two chambers, which is the core quantitative finding.][Library/Method: Chart.js for all charts on Canvas, Vanilla JS for all interactions.] -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* stone-100 */
+            color: #292524; /* stone-800 */
+        }
+        .nav-link.active {
+            color: #d97706; /* amber-600 */
+            border-bottom-color: #d97706; /* amber-600 */
+        }
+        .tab-btn.active {
+            background-color: #d97706; /* amber-600 */
+            color: #ffffff;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl md:text-2xl font-bold text-stone-700">Pyramid Transducer Model</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 text-sm font-medium text-stone-600 hover:text-amber-600 border-b-2 border-transparent">Overview</a>
+                        <a href="#mechanisms" class="nav-link px-3 py-2 text-sm font-medium text-stone-600 hover:text-amber-600 border-b-2 border-transparent">Mechanisms</a>
+                        <a href="#simulation" class="nav-link px-3 py-2 text-sm font-medium text-stone-600 hover:text-amber-600 border-b-2 border-transparent">Simulation</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 text-sm font-medium text-stone-600 hover:text-amber-600 border-b-2 border-transparent">Conclusion</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Section 1: Overview -->
+        <section id="overview" class="mb-16">
+            <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl text-center">An Active Resonant Transducer System</h2>
+            <p class="mt-4 text-lg text-stone-600 text-center max-w-3xl mx-auto">This report analyzes the Great Pyramid's chambers not as passive tombs, but as an integrated system for energy conversion. The model incorporates advanced acoustic principles and material properties to demonstrate a plausible mechanism for transforming mechanical vibrations into electromagnetic energy.</p>
+
+            <div class="mt-12 p-6 bg-white rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-center mb-6 text-stone-800">System Energy Flow</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="p-4 border-2 border-stone-300 rounded-lg bg-stone-50 w-48">
+                            <p class="font-bold">Grand Gallery</p>
+                            <p class="text-sm text-stone-500">Acoustic Waveguide</p>
+                        </div>
+                        <div class="text-3xl text-amber-600 font-mono my-2">&darr;</div>
+                        <div class="p-4 border-2 border-stone-300 rounded-lg bg-stone-50 w-48">
+                            <p class="font-bold">Queen's Chamber</p>
+                            <p class="text-sm text-stone-500">Hydro-Acoustic Amplifier</p>
+                        </div>
+                    </div>
+                    <div class="text-3xl text-amber-600 font-mono hidden md:block mx-4">&rarr;</div>
+                     <div class="text-3xl text-amber-600 font-mono md:hidden">&darr;</div>
+                    <div class="p-6 border-2 border-amber-500 rounded-lg bg-amber-50 w-64">
+                        <p class="font-bold text-lg">King's Chamber</p>
+                        <p class="text-md text-amber-700">Primary Transducer</p>
+                        <p class="mt-2 text-sm text-stone-500">Focused stress converts to EM field via piezoelectric granite.</p>
+                    </div>
+                </div>
+                 <p class="mt-6 text-sm text-center text-stone-500">This diagram illustrates the hypothesized flow of energy, beginning with amplification in the lower chambers and culminating in transduction within the King's Chamber.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Core Mechanisms -->
+        <section id="mechanisms" class="mb-16">
+            <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl text-center">Core Physical Mechanisms</h2>
+            <p class="mt-4 text-lg text-stone-600 text-center max-w-3xl mx-auto">The model relies on four interconnected physical principles to achieve energy conversion. Select a mechanism below to explore its role in the system.</p>
+
+            <div class="mt-10">
+                <div class="flex justify-center flex-wrap gap-2 mb-6">
+                    <button class="tab-btn active px-4 py-2 text-sm font-medium rounded-md bg-white shadow-sm" data-tab="focusing">1. Anti-Wave Focusing</button>
+                    <button class="tab-btn px-4 py-2 text-sm font-medium rounded-md bg-white shadow-sm" data-tab="amplification">2. Hydro-Acoustic Amplification</button>
+                    <button class="tab-btn px-4 py-2 text-sm font-medium rounded-md bg-white shadow-sm" data-tab="transduction">3. Piezoelectric Transduction</button>
+                    <button class="tab-btn px-4 py-2 text-sm font-medium rounded-md bg-white shadow-sm" data-tab="harmonics">4. Nonlinear Harmonics</button>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg min-h-[30rem]">
+                    <!-- Tab Content: Anti-Wave Focusing -->
+                    <div id="focusing" class="tab-content">
+                        <h3 class="text-2xl font-semibold text-amber-700 mb-4">Anti-Wave Acoustic Focusing</h3>
+                        <p class="text-stone-600 mb-4">Classical standing waves in a cavity have zero net energy flow. This model introduces an "Anti-Wave" phase gradient, an active control mechanism that directs acoustic energy. This transforms the chamber from a passive resonator into an active focusing device.</p>
+                        <p class="text-stone-600 mb-6">The result is a non-zero, time-averaged energy flux, concentrating mechanical stress onto specific targets like the granite sarcophagus.</p>
+                        <div class="bg-stone-50 p-4 rounded-md border border-stone-200">
+                             <p class="text-sm font-semibold text-stone-700">Governing Equation:</p>
+                             <p class="font-mono text-sm md:text-base text-stone-800 mt-2">I(r) = (1 / 2ρω) ∇P²(r) · sin(2Δφ(r))</p>
+                             <p class="text-xs text-stone-500 mt-2">Where a non-zero phase gradient Δφ(r) guarantees a directed energy flux I(r).</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Hydro-Acoustic Amplification -->
+                    <div id="amplification" class="tab-content hidden">
+                        <h3 class="text-2xl font-semibold text-amber-700 mb-4">Hydro-Acoustic Amplification</h3>
+                        <p class="text-stone-600 mb-4">A key challenge is transferring energy from air into solid granite, as their acoustic impedances are vastly different, causing most energy to reflect. The model proposes a sub-chamber water column (Well Shaft) to solve this.</p>
+                        <p class="text-stone-600 mb-6">Water acts as an intermediary, efficiently coupling the vibrations to the granite. This concept of using a massive, phase-coherent fluid driver parallels principles from Nikola Tesla's Wardenclyffe experiments for large-scale energy transfer.</p>
+                         <div class="bg-stone-50 p-4 rounded-md border border-stone-200">
+                             <p class="text-sm font-semibold text-stone-700">Impedance Matching:</p>
+                             <ul class="text-sm mt-2 space-y-1">
+                                 <li><span class="font-medium text-stone-700">Air:</span> ~415 Rayl</li>
+                                 <li><span class="font-medium text-stone-700">Water:</span> ~1,480,000 Rayl</li>
+                                 <li><span class="font-medium text-stone-700">Granite:</span> ~16,200,000 Rayl</li>
+                             </ul>
+                             <p class="text-sm text-stone-600 mt-3">The transmission coefficient from air to water is nearly perfect (T ≈ 0.999), demonstrating its effectiveness as an energy coupler.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Piezoelectric Transduction -->
+                    <div id="transduction" class="tab-content hidden">
+                         <h3 class="text-2xl font-semibold text-amber-700 mb-4">Piezoelectric Transduction</h3>
+                        <p class="text-stone-600 mb-4">The final step is converting focused mechanical stress into electricity. The Red Aswan Granite used in the chambers is rich in quartz, a piezoelectric crystal. This means it generates a voltage when compressed.</p>
+                        <p class="text-stone-600 mb-6">When the focused acoustic wave applies oscillating pressure (stress) to the granite, the quartz crystals within generate an oscillating electric field—the system's primary electromagnetic output.</p>
+                        <div class="bg-stone-50 p-4 rounded-md border border-stone-200">
+                             <p class="text-sm font-semibold text-stone-700">Induced Electric Field:</p>
+                             <p class="font-mono text-sm md:text-base text-stone-800 mt-2">|E_induced| ≈ (d_eff / ε_granite) · σ_max</p>
+                             <p class="text-xs text-stone-500 mt-2">The output voltage is directly proportional to the applied mechanical stress (σ_max).</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Nonlinear Harmonics -->
+                    <div id="harmonics" class="tab-content hidden">
+                         <h3 class="text-2xl font-semibold text-amber-700 mb-4">Nonlinear Harmonics</h3>
+                        <p class="text-stone-600 mb-4">Under the immense pressure created by focused resonance, the granite structure no longer behaves linearly. This high-stress environment causes a phenomenon known as Second Harmonic Generation.</p>
+                        <p class="text-stone-600 mb-6">The system effectively "up-converts" the low input frequency into a higher frequency. This is critical, as higher frequencies propagate more efficiently through conductive materials, allowing the generated energy to be transmitted.</p>
+                        <div class="chart-container h-64 md:h-80 max-w-lg">
+                            <canvas id="harmonicsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Simulation -->
+        <section id="simulation" class="mb-16">
+            <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl text-center">Simulation Results Dashboard</h2>
+            <p class="mt-4 text-lg text-stone-600 text-center max-w-3xl mx-auto">Numerical simulations quantify the system's potential. The following results compare the performance of the King's Chamber (KC) as a standalone unit versus the Queen's Chamber (QC) amplified by the hydro-acoustic system.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h4 class="text-stone-500 font-medium">Peak Mechanical Stress</h4>
+                    <p id="stress-value" class="text-4xl font-bold text-amber-600 mt-2">2.1 kPa</p>
+                    <p class="text-sm text-stone-500">at Transducer Face (QC)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h4 class="text-stone-500 font-medium">Peak Net Acoustic Flux</h4>
+                    <p id="flux-value" class="text-4xl font-bold text-amber-600 mt-2">11.3 W/m²</p>
+                     <p class="text-sm text-stone-500">Energy Concentration (QC)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h4 class="text-stone-500 font-medium">Induced EM Field</h4>
+                    <p id="em-value" class="text-4xl font-bold text-amber-600 mt-2">28.2 V/m</p>
+                     <p class="text-sm text-stone-500">Piezoelectric Output (KC)</p>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <div class="chart-container h-96 md:h-[30rem] max-w-4xl">
+                     <canvas id="simulationResultsChart"></canvas>
+                </div>
+                 <p class="mt-4 text-sm text-center text-stone-500">Hover over the bars for detailed values. The chart compares key performance indicators between the chambers, highlighting the effect of the hydro-acoustic amplification in the Queen's Chamber.</p>
+            </div>
+        </section>
+
+        <!-- Section 4: Conclusion -->
+        <section id="conclusion">
+             <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl text-center">System Integration and Conclusion</h2>
+            <div class="mt-6 bg-white p-8 rounded-lg shadow-lg">
+                <p class="text-stone-600 mb-4">The analysis supports the hypothesis that the King’s and Queen’s Chambers were not passive structures but integral components of an engineered **Active Resonant Transducer System**. The model demonstrates a coherent, physics-based pathway for energy conversion:</p>
+                <ol class="list-decimal list-inside space-y-3 text-stone-700">
+                    <li>The **QC/Well Shaft** acts as a phase-coherent hydro-acoustic amplifier, converting low-frequency vibrations into high-amplitude mechanical stress.</li>
+                    <li>The **Grand Gallery** acts as a waveguide, focusing this energy into the primary transducer.</li>
+                    <li>The **KC/Sarcophagus** converts the concentrated stress into an oscillating electric field via the piezoelectric effect in its granite construction.</li>
+                </ol>
+                <p class="mt-6 font-semibold text-stone-800">The system is capable of generating a scalable electromagnetic potential of approximately <span class="text-amber-600">28 V/m</span> when driven at its fundamental frequency of 15.88 Hz, providing a quantitative foundation for its potential function as a sophisticated energy device.</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-stone-200 mt-16">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-stone-500">
+            <p>Interactive Report generated from "Unified Multi-Chamber Resonant Transduction" analysis.</p>
+            <p>&copy; 2025 Physics-Based Archeological Modeling Initiative. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data from the report
+            const reportData = {
+                kc: {
+                    stress: 2.0,
+                    flux: 10.97,
+                    emField: 28.2
+                },
+                qc: {
+                    stress: 2.1,
+                    flux: 11.3,
+                    emField: 26.9
+                },
+                frequencies: {
+                    fundamental: 15.88,
+                    secondHarmonic: 31.76
+                }
+            };
+
+            // --- Navigation Logic ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Tab Logic ---
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.id === tabId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // --- Chart.js Implementations ---
+
+            // 1. Harmonics Chart
+            const harmonicsCtx = document.getElementById('harmonicsChart').getContext('2d');
+            new Chart(harmonicsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fundamental Input (f1)', 'Generated Output (f2)'],
+                    datasets: [{
+                        label: 'Frequency (Hz)',
+                        data: [reportData.frequencies.fundamental, reportData.frequencies.secondHarmonic],
+                        backgroundColor: ['rgba(107, 114, 128, 0.6)', 'rgba(217, 119, 6, 0.6)'],
+                        borderColor: ['rgba(107, 114, 128, 1)', 'rgba(217, 119, 6, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Frequency Up-Conversion via Nonlinearity'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(2)} Hz`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Frequency (Hz)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. Simulation Results Chart
+            const resultsCtx = document.getElementById('simulationResultsChart').getContext('2d');
+            new Chart(resultsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Peak Mechanical Stress (kPa)', 'Peak Net Acoustic Flux (W/m²)', 'Induced EM Field (V/m)'],
+                    datasets: [
+                        {
+                            label: 'King\'s Chamber (KC)',
+                            data: [reportData.kc.stress, reportData.kc.flux, reportData.kc.emField],
+                            backgroundColor: 'rgba(107, 114, 128, 0.7)',
+                            borderColor: 'rgba(107, 114, 128, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Queen\'s Chamber (QC)',
+                            data: [reportData.qc.stress, reportData.qc.flux, reportData.qc.emField],
+                            backgroundColor: 'rgba(217, 119, 6, 0.7)',
+                            borderColor: 'rgba(217, 119, 6, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Comparative Performance: King\'s vs. Queen\'s Chamber'
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Value'
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
+
