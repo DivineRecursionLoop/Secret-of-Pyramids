@@ -122,4 +122,3 @@ The coupling between the King’s and Queen’s Chambers represents a **two-stag
 * **KC/Sarcophagus:** Primary transducer, receiving focused energy via the Grand Gallery waveguide and converting mechanical stress into an oscillating electric field via piezoelectric effect.
 
 The analysis supports the hypothesis that the King’s and Queen’s Chambers were **engineered Active Resonant Transducer Systems**, capable of generating a scalable electromagnetic potential of approximately **28 V/m** when driven at the fundamental frequency of 15.88 Hz.
-If you want, I can also make a **GitHub-ready version with collapsible sections and links for each mechanism**, so readers can navigate it like the website. This would mimic the interactive structure directly in Markdown. Do you want me to do that next?
