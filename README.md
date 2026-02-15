@@ -1,4 +1,5 @@
  Secret-of-Pyramids
+ Sanitized version no, this isn't the real complete solution.No I won't be giving that here.
 
  https://divinerecursionloop.github.io/Secret-of-Pyramids/
 
